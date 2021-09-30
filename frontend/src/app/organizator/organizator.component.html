@@ -1,0 +1,225 @@
+<nav class="navbar sticky-top navbar-expand-lg navbar-light" style="background-color: rgb(243, 106, 91)">
+  <a class="navbar-brand" href="#">Olimpijske igre 2021</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link" href="http://localhost:4200/organizator">Unos sportova i disciplina</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="http://localhost:4200/organizator#unosTakmicenja">Unos takmicenja</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="http://localhost:4200/organizator#zahtevi">Zahtevi za registraciju</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="http://localhost:4200/organizator#rekordi">Prikaz rekorda</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+<div style="display:flex; justify-content:flex-end; width:100%; padding:0;">
+  <button (click)='odjaviSe()'>Odjava</button>
+  <button (click)='promenaLozinke()'>Promena lozinke</button>
+</div>
+<div class="container" style="width: 100%; margin:0 auto;">
+  <table class="z-depth-2" style="text-align: center;">
+    <tr>
+      <th colspan='2'>Unos sporta i sportskih disciplina</th>
+    </tr>
+    <tr>
+      <td>Sport</td>
+      <td>
+        <input type='text' name='sport' [(ngModel)]='sport'>
+      </td>
+    </tr>
+    <tr>
+      <td>Disciplina</td>
+      <td>
+        <input type='text' name='disciplina' [(ngModel)]='disciplina'>
+      </td>
+    </tr>
+    <tr>
+      <td>Vrsta sporta</td>
+      <td>
+        <input type="radio" name="vrsta" id="individualni" value="individualni" [(ngModel)]="vrsta">Individualni
+        <input type="radio" name="vrsta" id="ekipni" value="ekipni" [(ngModel)]="vrsta">Ekipni
+      </td>
+    </tr>
+    <tr *ngIf='vrsta==="ekipni"'>
+      <td>Minimalan broj ucesnika</td>
+      <td>
+        <input type='number' name='min' [(ngModel)]='min'>
+      </td>
+    </tr>
+    <tr *ngIf='vrsta==="ekipni"'>
+      <td>Maksimalan broj ucesnika</td>
+      <td>
+        <input type='number' name='max' [(ngModel)]='max'>
+      </td>
+    </tr>
+    <tr>
+      <td colspan='2'>
+        <button (click)='dodajSport()'>Unesi sport</button>
+      </td>
+    </tr>
+    <tr *ngIf = 'porukaDuplikat!=""'>
+      <td colspan="2">{{porukaDuplikat}}</td>
+    </tr>
+  </table>
+</div>
+<br>
+
+<div class="container" style="width: 100%; margin:0 auto;" id="unosTakmicenja">
+  <table class="z-depth-2" style="text-align: center;">
+    <tr>
+      <th colspan='2'>Unos takmicenja</th>
+    </tr>
+    <tr>
+      <td>Sport:</td>
+      <td>
+        <select name="sportT" [(ngModel)]="sportT" (ngModelChange)="onChange()">
+          <option *ngFor="let s of sportovi" [ngValue]="s">{{s}}</option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td>Disciplina:</td>
+      <td>
+        <select *ngIf='sport!=""' name="disciplinaT" [(ngModel)]="disciplinaT">
+          <option *ngFor="let d of discipline" [ngValue]="d">{{d}}</option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td>Pol:</td>
+      <td>
+        <input type="radio" name="pol" id="m" value="m" [(ngModel)]="pol">M
+        <input type="radio" name="pol" id="z" value="z" [(ngModel)]="pol">Z
+      </td>
+    </tr>
+    <tr>
+      <td>Format takmicenja:</td>
+      <td>
+        <input type="text" name="format" [(ngModel)]='format'>
+      </td>
+    </tr>
+    <tr>
+      <td>Datum pocetka:</td>
+      <td>
+        <input type="date" name="datumPocetka" [(ngModel)]='datumPocetka'>
+      </td>
+    </tr>
+    <tr>
+      <td>Datum kraja:</td>
+      <td>
+        <input type="date" name="datumKraja" [(ngModel)]='datumKraja'>
+      </td>
+    </tr>
+    <tr>
+      <td>Lokacije takmicenja:</td>
+      <td>
+        <input type="text" name="lokacija" [(ngModel)]='lokacija'>
+        <button (click)='dodajLokaciju()'>Dodaj</button>
+      </td>
+    </tr>
+    <tr>
+      <td>Vrsta sporta</td>
+      <td>
+        <input type="radio" name="vrstaT" id="individualni" value="individualni" [(ngModel)]="vrstaT">Individualni
+        <input type="radio" name="vrstaT" id="ekipni" value="ekipni" [(ngModel)]="vrstaT">Ekipni
+      </td>
+    </tr>
+    <tr>
+      <td>Prikazi takmicare</td>
+      <td>
+        <input type="checkbox" name="prikazi" [(ngModel)]='prikaziTakmicare' (ngModelChange)="updateSportiste()">
+      </td>
+    </tr>
+    <tr *ngIf='vrstaT==="individualni" && prikaziTakmicare'>
+      <td>Takmicari:</td>
+      <td>
+        <select name="takmicar" [(ngModel)]="takmicari" multiple='multiple' (unesiNosioce) = 'onChangeSelect()'>
+          <option *ngFor="let t of sviTakmicari" [ngValue]="t.idSportiste">{{t.ime}} {{t.prezime}}</option>
+        </select>
+      </td>
+    </tr>
+    <tr *ngIf='vrstaT==="ekipni" && prikaziTakmicare'>
+      <td>Ekipe:</td>
+      <td>
+        <select name="ekipa" [(ngModel)]="takmicari" multiple='multiple'>
+          <option *ngFor="let t of sveEkipe" [ngValue]="t.idSportiste">{{t.ime}}</option>
+        </select>
+      </td>
+    </tr>
+    <tr *ngIf='vrstaT==="individualni" && prikaziTakmicare && sportT==="Tenis"'>
+      <td>Izaberite nosioce takmicenja!</td>
+      <td>
+        <select name="nosioci" [(ngModel)]="nosiociTakmicenja" multiple='multiple'>
+          <option *ngFor="let t of sviTakmicari" [ngValue]="t.idSportiste">{{t.ime}} {{t.prezime}}</option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td>Delegati:</td>
+      <td>
+        <select name="delegat" [(ngModel)]="delegatiT" multiple = 'multiple'>
+          <option *ngFor="let d of delegati" [ngValue]="d.korIme">{{d.ime}} {{d.prezime}}</option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td colspan='2'>
+        <button (click)='dodajTakmicenje()'>Unesi takmicenje</button>
+      </td>
+    </tr>
+  </table>
+
+</div>
+<br>
+<div class="container" style="width: 100%; margin:0 auto;" id="zahtevi">
+  <table class="z-depth-2" style="text-align: center;">
+    <tr>
+      <th colspan="3">Odobravanje zahteva za registraciju</th>
+    </tr>
+    <tr *ngFor = 'let z of zahteviZaReg'>
+      <td>{{z.ime}} {{z.prezime}}</td>
+      <td>
+        <button (click)='odobriZahtev(z)'>Odobri</button>
+      </td>
+      <td>
+        <button (click)='odbijZahtev(z)'>Odbij</button>
+      </td>
+    </tr>
+    <tr *ngIf = 'porukaZahtev!=""'>
+      <td colspan="3">{{porukaZahtev}}</td>
+    </tr>
+  </table>
+</div>
+<br>
+
+
+<div class="container" style="width: 100%; margin:0 auto;" id="rekordi">
+  <table>
+    <tr>
+      <th>Godina</th>
+      <th>Mesto</th>
+      <th>Sport</th>
+      <th>Disciplina</th>
+      <th>Ime i prezime</th>
+      <th>Nacionalnost</th>
+      <th>Vreme/Duzina rekorda</th>
+    </tr>
+    <tr *ngFor='let r of rekordi'>
+      <td>{{r.godina}}</td>
+      <td>{{r.mesto}}</td>
+      <td>{{r.sport}}</td>
+      <td>{{r.disciplina}}</td>
+      <td>{{r.imeIPrezime}}</td>
+      <td>{{r.nacionalnost}}</td>
+      <td>{{r.vremeDuzina}}</td>
+    </tr>
+  </table>
+</div>
